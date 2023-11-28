@@ -1,0 +1,11 @@
+table customers
+
+The customer tables has the following structure
+customer_id INT (primary key not null)
+first_name string not null
+last_name string not null
+street string not null
+housenumber string not null
+po int not null
+city string not null
+state string not null
