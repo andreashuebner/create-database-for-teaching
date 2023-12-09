@@ -1,3 +1,4 @@
+from customers import create_insert_statement
 from customers import populate_customer_table
 from helpers import load_file_content
 from helpers import substitute_template_variables
@@ -49,6 +50,20 @@ def create_database_files():
     if show_stats:
         print('Statement to create table', table_name_customers,'created')
     customer_entries = populate_customer_table()
+    print(customer_entries)
+    for entry in customer_entries:
+        customer_id = entry.customer_id
+        first_name = entry.first_name
+        last_name = entry.last_name
+        street = entry.street
+        housenumber = entry.housenumber
+        postal_code = entry.po
+        city = entry.city
+        state = entry.state
+        statement = create_insert_statement(customer_id,first_name,last_name,street,housenumber,
+                                            postal_code,city,state)
+        output_create_and_populate_tables += statement
+        output_create_and_populate_tables += '\n'
     if show_stats:
         print('Statement for table',table_name_customers,'created with',len(customer_entries),'entries.')
 

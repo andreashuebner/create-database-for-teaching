@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS public.customers
+CREATE TABLE public.customers
 (
     customer_id integer NOT NULL,
     first_name text COLLATE pg_catalog."default" NOT NULL,
@@ -15,3 +15,4 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.customers
     OWNER to postgres;
+insert into customers (customer_id,first_name,last_name,street,housenumber,po,city,state) values (1,'Thomas','Cox','Seventh Street','405',39755,'Springfield','MA');

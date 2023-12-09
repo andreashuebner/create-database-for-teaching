@@ -30,7 +30,7 @@ def substitute_template_variables(template, template_variables,template_values):
 
     for i in range(len(template_variables)):
         template_variable = template_variables[i]
-        template_value = template_values[i]
+        template_value = str(template_values[i])
         template = template.replace(template_variable, template_value)
 
     return template
