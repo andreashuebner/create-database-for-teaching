@@ -1,7 +1,9 @@
-from customers import create_insert_statement
-from customers import populate_customer_table
+from customers import create_insert_statement_customers
+from customers import create_table_statement_customers
+from customers import populate_table_customers
 from helpers import load_file_content
 from helpers import substitute_template_variables
+from products import create_table_statement_products
 
 import os
 
@@ -13,6 +15,7 @@ output_file_sql_statements = 'customers.sql'  # The file name with all statement
 # and populate it
 database_name = 'db_customers'  # name of the database to create
 table_name_customers = 'customers'
+table_name_products = 'products'
 show_stats = True # Whether to print stats about the created data
 
 # Global parameters (please do not modify)
@@ -41,15 +44,12 @@ def create_database_files():
     if show_stats:
         print('Statement to create database",database_name,"created')
 
-    create_table_customers_statement = load_file_content(
-        os.path.join(template_dir, 'create_table_customers' + '_' + database_system + '.txt'))
-    create_table_customers_statement = substitute_template_variables(create_table_customers_statement, ['{{table_name}}'],
-                                                              [table_name_customers])
+    create_table_customers_statement = create_table_statement_customers(template_dir,database_system,'customers')
     output_create_and_populate_tables += create_table_customers_statement
     output_create_and_populate_tables += '\n'
     if show_stats:
         print('Statement to create table', table_name_customers,'created')
-    customer_entries = populate_customer_table()
+    customer_entries = populate_table_customers()
     print(customer_entries)
     for entry in customer_entries:
         customer_id = entry.customer_id
@@ -60,13 +60,16 @@ def create_database_files():
         postal_code = entry.po
         city = entry.city
         state = entry.state
-        statement = create_insert_statement(customer_id,first_name,last_name,street,housenumber,
+        statement = create_insert_statement_customers(database_system,table_name_customers,customer_id,first_name,last_name,street,housenumber,
                                             postal_code,city,state)
         output_create_and_populate_tables += statement
         output_create_and_populate_tables += '\n'
     if show_stats:
         print('Statement for table',table_name_customers,'created with',len(customer_entries),'entries.')
-
+    output_create_and_populate_tables += '\n'
+    create_table_products_statement = create_table_statement_products(template_dir,database_system,'products')
+    output_create_and_populate_tables += create_table_products_statement
+    output_create_and_populate_tables += '\n\n'
     with open(os.path.join(output_dir,output_file_create_database_statement),'w') as output_file:
         output_file.write(output_create_database)
     with open(os.path.join(output_dir,output_file_sql_statements),'w') as output_file:

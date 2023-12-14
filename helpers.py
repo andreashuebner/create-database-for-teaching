@@ -8,6 +8,11 @@ def load_file_content(path_to_file):
     """
     with open(path_to_file, 'r') as f:
         return f.read()
+
+def remove_linebreaks_whitespaces(string_to_clean):
+    clean_string = string_to_clean.replace('\n', '')
+    clean_string = clean_string.replace(' ','')
+    return clean_string
 def return_random_value_from_list(list_of_values):
     """
     Returns a random value from a list of values

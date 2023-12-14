@@ -1,0 +1,12 @@
+CREATE TABLE public.{{table_name}}
+(
+    product_id integer NOT NULL,
+    product_category_id integer NOT NULL,
+    product_name text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT products_pkey PRIMARY KEY (product_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.{{table_name}}
+    OWNER to postgres;

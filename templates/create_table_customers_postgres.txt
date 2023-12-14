@@ -13,5 +13,5 @@ CREATE TABLE public.{{table_name}}
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.customers
+ALTER TABLE IF EXISTS public.{{table_name}}
     OWNER to postgres;

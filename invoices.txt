@@ -1,0 +1,9 @@
+table invoices
+
+The invoices table has the following structure
+id INT64 (primary key)
+date (String) Date of purchase in format yyyy-MM-dd
+invoice_id INT64 (invoice id can be repeated as 1 invoice_id can appear multiple times if multiple items purchases)
+product_id INT64 (id of the product purchased). invoice_id + product_id are the combined primary key of this table
+number_units_purchased INT64 (number of units purchased)
+price_per_unit FLOAT (price per unit)

@@ -1,6 +1,6 @@
 table customers
 
-The customer tables has the following structure
+The customer table has the following structure
 customer_id INT (primary key not null)
 first_name string not null
 last_name string not null

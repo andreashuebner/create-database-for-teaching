@@ -1,0 +1,6 @@
+table articles
+
+The table articles has the following structure
+product_id INT64 (primary key) The id of the article
+product_category_id INT64 - Product Category ID
+product_name String Name of the article
