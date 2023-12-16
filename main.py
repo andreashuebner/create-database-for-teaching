@@ -3,7 +3,10 @@ from customers import create_table_statement_customers
 from customers import populate_table_customers
 from helpers import load_file_content
 from helpers import substitute_template_variables
+from products_params import products
 from products import create_table_statement_products
+from products import create_insert_statement_products
+from products import populate_table_products
 
 import os
 
@@ -70,6 +73,18 @@ def create_database_files():
     create_table_products_statement = create_table_statement_products(template_dir,database_system,'products')
     output_create_and_populate_tables += create_table_products_statement
     output_create_and_populate_tables += '\n\n'
+    if show_stats:
+        print('Statement to create table',table_name_products,'created')
+
+    product_entries = populate_table_products(products)
+    for entry in product_entries:
+        product_id = entry[0]
+        product_category_id = entry[1]
+        product_name = entry[2]
+        insert_statement = create_insert_statement_products(database_system,table_name_products,product_id,product_category_id,product_name)
+        output_create_and_populate_tables += insert_statement
+        output_create_and_populate_tables += '\n'
+
     with open(os.path.join(output_dir,output_file_create_database_statement),'w') as output_file:
         output_file.write(output_create_database)
     with open(os.path.join(output_dir,output_file_sql_statements),'w') as output_file:
