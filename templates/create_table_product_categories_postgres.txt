@@ -1,9 +1,8 @@
 CREATE TABLE public.{{table_name}}
 (
-    product_id integer NOT NULL,
     product_category_id integer NOT NULL,
-    product_name text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT {{table_name}}_pkey PRIMARY KEY (product_id)
+    product_category_name text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT {{table_name}}_pkey PRIMARY KEY (product_category_id)
 )
 
 TABLESPACE pg_default;

@@ -11,6 +11,15 @@ def create_table_statement_products(template_dir, database_system, table_name):
                                                                    ['{{table_name}}'],
                                                                    [table_name])
     return create_table_product_statement
+
+def create_table_statement_product_categories(template_dir, database_system, table_name):
+    create_table_product_categories_statement = load_file_content(
+        os.path.join(template_dir, 'create_table_product_categories' + '_' + database_system + '.txt'))
+    create_table_product_categories_statement = substitute_template_variables(create_table_product_categories_statement,
+                                                                   ['{{table_name}}'],
+                                                                   [table_name])
+    return create_table_product_categories_statement
+
 def create_insert_statement_products(database_system,table_name,product_id, product_category_id, product_name):
     insert_statement = load_file_content('templates/insert_products_' + database_system + '.txt')
     insert_statement = substitute_template_variables(insert_statement,

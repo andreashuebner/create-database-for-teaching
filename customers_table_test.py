@@ -39,7 +39,7 @@ class TestPopulateCustomerTable:
     po integer NOT NULL,
     city text COLLATE pg_catalog."default" NOT NULL,
     state text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT customers_pkey PRIMARY KEY (customer_id)
+    CONSTRAINT customers2_pkey PRIMARY KEY (customer_id)
 )
 
 TABLESPACE pg_default;

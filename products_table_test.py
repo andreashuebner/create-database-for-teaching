@@ -1,5 +1,6 @@
 from helpers import remove_linebreaks_whitespaces
 from products import create_table_statement_products
+from products import create_table_statement_product_categories
 from products import create_insert_statement_products
 from products import populate_table_products
 
@@ -15,7 +16,7 @@ class TestProductsTable:
     product_id integer NOT NULL,
     product_category_id integer NOT NULL,
     product_name text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT products_pkey PRIMARY KEY (product_id)
+    CONSTRAINT products2_pkey PRIMARY KEY (product_id)
 )
 
 TABLESPACE pg_default;
@@ -26,6 +27,25 @@ ALTER TABLE IF EXISTS public.products2
         expected_statement = remove_linebreaks_whitespaces(expected_statement)
         product_table_create_statement = remove_linebreaks_whitespaces(product_table_create_statement)
         assert(expected_statement == product_table_create_statement)
+
+    def test_create_product_categories_table(self):
+        product_table_create_statement = create_table_statement_product_categories('templates', 'postgres', 'product_categories2')
+        expected_statement = '''
+        CREATE TABLE public.product_categories2
+    (
+        product_category_id integer NOT NULL,
+        product_category_name text COLLATE pg_catalog."default" NOT NULL,
+        CONSTRAINT product_categories2_pkey PRIMARY KEY (product_category_id)
+    )
+
+    TABLESPACE pg_default;
+
+    ALTER TABLE IF EXISTS public.product_categories2
+        OWNER to postgres;
+            '''
+        expected_statement = remove_linebreaks_whitespaces(expected_statement)
+        product_table_create_statement = remove_linebreaks_whitespaces(product_table_create_statement)
+        assert (expected_statement == product_table_create_statement)
 
     def test_populate_products_with_primary_keys_start_1(self):
         products = [
