@@ -5,7 +5,9 @@ from helpers import load_file_content
 from helpers import substitute_template_variables
 from products_params import products
 from products import create_table_statement_products
+from products import create_table_statement_product_categories
 from products import create_insert_statement_products
+from products import create_insert_statement_product_categories
 from products import populate_table_products
 
 import os
@@ -19,6 +21,7 @@ output_file_sql_statements = 'customers.sql'  # The file name with all statement
 database_name = 'db_customers'  # name of the database to create
 table_name_customers = 'customers'
 table_name_products = 'products'
+table_name_product_categories = 'product_categories'
 show_stats = True # Whether to print stats about the created data
 
 # Global parameters (please do not modify)
@@ -45,7 +48,7 @@ def create_database_files():
     output_create_database += create_database_statement
     output_create_database += '\n'
     if show_stats:
-        print('Statement to create database",database_name,"created')
+        print('Statement to create database',database_name,'created')
 
     create_table_customers_statement = create_table_statement_customers(template_dir,database_system,'customers')
     output_create_and_populate_tables += create_table_customers_statement
@@ -53,7 +56,6 @@ def create_database_files():
     if show_stats:
         print('Statement to create table', table_name_customers,'created')
     customer_entries = populate_table_customers()
-    print(customer_entries)
     for entry in customer_entries:
         customer_id = entry.customer_id
         first_name = entry.first_name
@@ -68,7 +70,7 @@ def create_database_files():
         output_create_and_populate_tables += statement
         output_create_and_populate_tables += '\n'
     if show_stats:
-        print('Statement for table',table_name_customers,'created with',len(customer_entries),'entries.')
+        print('Statement to populate table',table_name_customers,'created with',len(customer_entries),'entries.')
     output_create_and_populate_tables += '\n'
     create_table_products_statement = create_table_statement_products(template_dir,database_system,'products')
     output_create_and_populate_tables += create_table_products_statement
@@ -84,6 +86,22 @@ def create_database_files():
         insert_statement = create_insert_statement_products(database_system,table_name_products,product_id,product_category_id,product_name)
         output_create_and_populate_tables += insert_statement
         output_create_and_populate_tables += '\n'
+
+    if show_stats:
+        print('Statement to populate table',table_name_products,'created with',len(product_entries),'entries.')
+    output_create_and_populate_tables += '\n\n'
+    create_table_product_category_statement = create_table_statement_product_categories(template_dir, database_system, table_name_product_categories)
+    output_create_and_populate_tables += create_table_product_category_statement
+    output_create_and_populate_tables += '\n\n'
+    if show_stats:
+        print('Statement to create table', table_name_product_categories, 'created')
+
+    insert_statement_product_categories = create_insert_statement_product_categories(database_system, table_name_product_categories,products)
+    output_create_and_populate_tables += insert_statement_product_categories
+    output_create_and_populate_tables += '\n\n'
+    if show_stats:
+        print('Statement to populate table', table_name_product_categories, 'created')
+
 
     with open(os.path.join(output_dir,output_file_create_database_statement),'w') as output_file:
         output_file.write(output_create_database)

@@ -2,6 +2,7 @@ from helpers import remove_linebreaks_whitespaces
 from products import create_table_statement_products
 from products import create_table_statement_product_categories
 from products import create_insert_statement_products
+from products import create_insert_statement_product_categories
 from products import populate_table_products
 
 import pytest
@@ -93,6 +94,36 @@ ALTER TABLE IF EXISTS public.products2
         '''
         expected_statement = remove_linebreaks_whitespaces(expected_statement)
         assert(insert_statement == expected_statement)
+
+    def test_create_insert_statement_product_categories(self):
+        products = [
+            ('Jeans', 'Clothes', 30.73),
+            ('Smartwatch', 'Electronics', 120.46),
+            ('Coffee Maker', 'Home and Kitchen', 40.3),
+            ('Basketball', 'Sports and Outdoors', 80.96),
+            ('Sunglasses', 'Fashion', 30.99),
+            ('Facial Moisturizer', 'Beauty', 5.56),
+            ('Jeans2', 'Clothes', 50.50),
+            ('Chocolate', 'Sweets', 2)
+        ]
+        # so we are expecting the following product categories
+        # 1 = Clothes, 2 = Electronics, 3 = Home and Kitchen, 4 = Sports and Outdoors,
+        # 5 = Fashion, 6 = Beauty, 7 = Sweets
+        expected_statement = ''
+        expected_statement += "insert into product_categories2 (product_category_id,product_category_name) values (1,'Clothes');"
+        expected_statement += "insert into product_categories2 (product_category_id,product_category_name) values (2,'Electronics');"
+        expected_statement += "insert into product_categories2 (product_category_id,product_category_name) values (3,'Home and Kitchen');"
+        expected_statement += "insert into product_categories2 (product_category_id,product_category_name) values (4,'Sports and Outdoors');"
+        expected_statement += "insert into product_categories2 (product_category_id,product_category_name) values (5,'Fashion');"
+        expected_statement += "insert into product_categories2 (product_category_id,product_category_name) values (6,'Beauty');"
+        expected_statement += "insert into product_categories2 (product_category_id,product_category_name) values (7,'Sweets');"
+
+        insert_statement = create_insert_statement_product_categories('postgres','product_categories2',products)
+        expected_statement = remove_linebreaks_whitespaces(expected_statement)
+        insert_statement = remove_linebreaks_whitespaces(insert_statement)
+        assert(insert_statement == expected_statement)
+
+
 
 
 

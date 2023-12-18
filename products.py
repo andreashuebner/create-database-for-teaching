@@ -36,6 +36,41 @@ def create_insert_statement_products(database_system,table_name,product_id, prod
 
     return insert_statement
 
+def create_insert_statement_product_categories(database_system, table_name,products):
+    '''
+    Creates a string of insert statements to populate the table product_categories
+    For this, the unique product categories need to be extract from the product list (see file products_params.py)
+    :param database_system: The database system (currently only supported 'postgres')
+    :param table_name: The name of the product category table to be created (can be set in main.py, default is product_categories)
+    :param products: The list of products from the file products_params.py
+    :return: A string with the insert statements, each insert statement separated by '\n'
+    '''
+
+    insert_statement_single_category = load_file_content('templates/insert_product_categories_' + database_system + '.txt')
+    insert_statement = ''
+    product_categories_inserted = {}
+    current_id = 1
+    for row in products:
+        product_category = row[1]
+        if product_category not in product_categories_inserted:
+            new_insert_statement = insert_statement_single_category
+            new_insert_statement = substitute_template_variables(new_insert_statement,
+                                                                 ['{{table_name}}',
+                                                                  '{{product_category_id}}',
+                                                                  '{{product_category_name}}'
+                                                                  ],
+                                                                 [
+                                                                   table_name,
+                                                                     current_id,
+                                                                     product_category
+                                                                 ])
+            insert_statement += new_insert_statement
+            insert_statement += '\n'
+            product_categories_inserted[product_category] = current_id
+            current_id += 1
+
+    return insert_statement
+
 def populate_table_products(products,
                             start_value_primary_key_products=1,
                             start_value_primary_key_product_categories=1

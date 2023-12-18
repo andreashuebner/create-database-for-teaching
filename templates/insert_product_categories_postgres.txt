@@ -1,0 +1,1 @@
+insert into {{table_name}} (product_category_id,product_category_name) values ({{product_category_id}},'{{product_category_name}}');
