@@ -3,6 +3,7 @@ from customers import create_table_statement_customers
 from customers import populate_table_customers
 from helpers import load_file_content
 from helpers import substitute_template_variables
+from invoices import create_table_statement_invoices
 from products_params import products
 from products import create_table_statement_products
 from products import create_table_statement_product_categories
@@ -12,7 +13,7 @@ from products import populate_table_products
 
 import os
 
-# Global options
+# Global options that can be adjusted #################################
 database_system = 'postgres'  # supported options: currently only "postgres"
 output_dir = 'database_files'  # output directory for all files created by script
 output_file_create_database_statement = 'create_database_customers.sql'
@@ -20,11 +21,19 @@ output_file_sql_statements = 'customers.sql'  # The file name with all statement
 # and populate it
 database_name = 'db_customers'  # name of the database to create
 table_name_customers = 'customers'
+table_name_invoices = 'invoices'
 table_name_products = 'products'
 table_name_product_categories = 'product_categories'
+start_date_invoice_generation = '2022-01-01'
+end_date_invoice_generation = '2023-12-31'
+probability_invoice_per_customer_id_per_day = 0.02 # Probability to generate an invoice for a single customers per day
+average_number_different_products_per_invoice = 2 # Average number of different products per invoice
+average_number_items_per_product = 3 # Average number of items per product for each product in invoice
 show_stats = True # Whether to print stats about the created data
 
-# Global parameters (please do not modify)
+# End global options that can be adjusted ##################################################
+
+# Global parameters
 template_dir = 'templates'
 
 
@@ -102,6 +111,13 @@ def create_database_files():
     if show_stats:
         print('Statement to populate table', table_name_product_categories, 'created')
 
+    output_create_and_populate_tables += '\n\n'
+    create_table_invoices_statement = create_table_statement_invoices(template_dir, database_system,
+                                                                                        table_name_invoices)
+    output_create_and_populate_tables += create_table_invoices_statement
+    output_create_and_populate_tables += '\n\n'
+    if show_stats:
+        print('Statement to create table', table_name_invoices, 'created')
 
     with open(os.path.join(output_dir,output_file_create_database_statement),'w') as output_file:
         output_file.write(output_create_database)

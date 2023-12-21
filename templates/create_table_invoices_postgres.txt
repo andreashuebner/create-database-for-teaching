@@ -1,0 +1,14 @@
+CREATE TABLE  public.{{table_name}}
+(
+    date text COLLATE pg_catalog."default" NOT NULL,
+    customer_id integer NOT NULL,
+    invoice_id integer NOT NULL,
+    product_id integer NOT NULL,
+    number_items integer NOT NULL,
+    price_per_item double precision NOT NULL
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.{{table_name}}
+    OWNER to postgres;

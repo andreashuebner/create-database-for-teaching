@@ -1,8 +1,6 @@
 # This list is used to populate the tables articles.
 # Please feel free to adjust
-# The product list contains tuples of product names, product categories and base price
-# The purpose of the base price is to make sure that, when prices are generated automatically,
-# they fluctuate realistically
+# The product list contains tuples of product names, product categories and price
 # The primary key (product_id) will be generated automatically
 
 products = [
