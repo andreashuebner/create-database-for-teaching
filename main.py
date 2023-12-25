@@ -24,6 +24,8 @@ table_name_customers = 'customers'
 table_name_invoices = 'invoices'
 table_name_products = 'products'
 table_name_product_categories = 'product_categories'
+customers_start_value_primary_key = 1
+number_of_customer_entries_to_generate = 1000
 start_date_invoice_generation = '2022-01-01'
 end_date_invoice_generation = '2023-12-31'
 probability_invoice_per_customer_id_per_day = 0.02 # Probability to generate an invoice for a single customers per day
@@ -64,7 +66,7 @@ def create_database_files():
     output_create_and_populate_tables += '\n'
     if show_stats:
         print('Statement to create table', table_name_customers,'created')
-    customer_entries = populate_table_customers()
+    customer_entries = populate_table_customers(1,10000)
     for entry in customer_entries:
         customer_id = entry.customer_id
         first_name = entry.first_name

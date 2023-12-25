@@ -1,6 +1,8 @@
+from helpers import date_string_to_date
 from helpers import load_file_content
 from helpers import substitute_template_variables
 
+import datetime
 import os
 
 def create_table_statement_invoices(template_dir, database_system, table_name):
@@ -31,4 +33,19 @@ def populate_table_invoices(customer_data, product_data,start_date, end_date,pro
     5: price_per_item (double) - The price per item for a given product_id in the generated invoice
     """
     generated_invoice_items = []
+    list_customer_ids = []
+    list_product_ids = []
+    for customer in customer_data:
+        customer_id = customer.customer_id
+        list_customer_ids.append(customer_id)
+
+    for product in product_data:
+        list_product_ids.append(product[0])
+
+    start_date_as_date = date_string_to_date(start_date)
+    end_date_as_date = date_string_to_date(end_date)
+    delta = datetime.timedelta(days=1)
+    while start_date_as_date <= end_date_as_date:
+        start_date_as_date += delta
+
     return generated_invoice_items

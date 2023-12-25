@@ -7,13 +7,13 @@ from customers import populate_table_customers
 
 class TestPopulateCustomerTable:
     def test_returns_correct_number_of_entries(self):
-        customer_entries = populate_table_customers()
+        customer_entries = populate_table_customers(1,1000)
         assert(len(customer_entries) == 1000) # default value, if now parameters
         customer_entries = populate_table_customers(number_of_entries=205)
         assert (len(customer_entries) == 205)
 
     def test_creates_correct_primary_key_start_1(self):
-        customer_entries = populate_table_customers()
+        customer_entries = populate_table_customers(1,1000)
         assert (customer_entries[0].customer_id == 1)
         assert (customer_entries[1].customer_id == 2)
         assert (customer_entries[999].customer_id == 1000)

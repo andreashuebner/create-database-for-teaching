@@ -1,4 +1,43 @@
+import datetime
 import random
+
+error_message_invalid_date_string = 'Date string must be in format yyyy-MM-dd'
+
+
+
+class InvalidDateStringError(Exception):
+    def __init__(self,message):
+        self.message = message
+        super().__init__(self.message)
+
+def date_to_string(date):
+    """
+    Converts a datetime date to a string in format yyyy-MM-dd
+    :param date: datetime.date object
+    :return:
+        A string representation in format yyyy-MM-dd
+    """
+    year_str = str(date.year)
+    month_str = str(date.month)
+    day_str = str(date.day)
+    if len(month_str) == 1:
+        month_str = '0' + month_str
+    if len(day_str) == 1:
+        day_str = '0' + day_str
+    return year_str + '-' + month_str + '-' + day_str
+
+def date_string_to_date(date_string):
+    """
+    Converts a string in format yyyy-MM-dd to datetime.date object
+    :param date_string: A string in format yyyy-MM-dd
+    :return: The string converted to datetime.date object
+    """
+    if len(date_string) != 10:
+        raise InvalidDateStringError(error_message_invalid_date_string)
+    year = date_string[0:4]
+    month = date_string[5:7]
+    day = date_string[8:]
+    return datetime.date(int(year),int(month),int(day))
 
 def load_file_content(path_to_file):
     """

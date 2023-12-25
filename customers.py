@@ -1,5 +1,3 @@
-customers_start_value_primary_key = 1
-number_of_customer_entries_to_generate = 1000
 
 from collections import namedtuple
 from customers_params import (first_names, last_names, street_names, city_states)
@@ -45,8 +43,8 @@ def create_table_statement_customers(template_dir,database_system, table_name):
                                                                      [table_name])
     return create_table_customers_statement
 
-def populate_table_customers(start_value=customers_start_value_primary_key,
-                            number_of_entries=number_of_customer_entries_to_generate):
+def populate_table_customers(start_value=1,
+                            number_of_entries=10000):
     '''
     Create the entries for the customer table
     :return: A list of named tuples with the following entries
