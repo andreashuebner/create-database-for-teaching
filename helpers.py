@@ -2,13 +2,14 @@ import datetime
 import random
 
 error_message_invalid_date_string = 'Date string must be in format yyyy-MM-dd'
-
+error_message_invalid_input_unique_values_from_list = 'First argument must be a non-empty list and second parameter (number of unique items) a list'
 
 
 class InvalidDateStringError(Exception):
-    def __init__(self,message):
+    def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
 
 def date_to_string(date):
     """
@@ -26,6 +27,7 @@ def date_to_string(date):
         day_str = '0' + day_str
     return year_str + '-' + month_str + '-' + day_str
 
+
 def date_string_to_date(date_string):
     """
     Converts a string in format yyyy-MM-dd to datetime.date object
@@ -37,7 +39,8 @@ def date_string_to_date(date_string):
     year = date_string[0:4]
     month = date_string[5:7]
     day = date_string[8:]
-    return datetime.date(int(year),int(month),int(day))
+    return datetime.date(int(year), int(month), int(day))
+
 
 def load_file_content(path_to_file):
     """
@@ -48,10 +51,13 @@ def load_file_content(path_to_file):
     with open(path_to_file, 'r') as f:
         return f.read()
 
+
 def remove_linebreaks_whitespaces(string_to_clean):
     clean_string = string_to_clean.replace('\n', '')
-    clean_string = clean_string.replace(' ','')
+    clean_string = clean_string.replace(' ', '')
     return clean_string
+
+
 def return_random_value_from_list(list_of_values):
     """
     Returns a random value from a list of values
@@ -61,7 +67,17 @@ def return_random_value_from_list(list_of_values):
 
     return random.choice(list_of_values)
 
-def substitute_template_variables(template, template_variables,template_values):
+
+def return_random_unique_values_from_list(list_of_values, number_unique_items):
+    print(type(list_of_values))
+    if isinstance(list_of_values, list):
+        return []
+    else:
+        raise ValueError(error_message_invalid_input_unique_values_from_list)
+
+
+
+def substitute_template_variables(template, template_variables, template_values):
     """
     Substitutes one or more template variables in a string.
     Example call: substitute_template_variables(template_string, ['{{customer}}','{{customer2}}'],['andreas','peter])

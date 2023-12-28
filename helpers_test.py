@@ -6,6 +6,7 @@ from helpers import date_string_to_date
 from helpers import load_file_content
 from helpers import remove_linebreaks_whitespaces
 from helpers import return_random_value_from_list
+from helpers import return_random_unique_values_from_list
 from helpers import substitute_template_variables
 from helpers import InvalidDateStringError
 
@@ -71,6 +72,18 @@ class TestReturnRandomValueFromList:
         list_of_values = ['Andreas', 'Peter', 'Lisa', 'Sandra']
         random_value = return_random_value_from_list(list_of_values)
         assert (random_value in list_of_values)
+
+
+class TestReturnRandomUniqueValuesFromList:
+
+    def test_throws_error_incorrect_parameters(self):
+        test_cases = [
+            ('',''),
+        ]
+        for test_case in test_cases:
+            with pytest.raises(ValueError):
+                return_random_unique_values_from_list(test_case[0], test_case[1])
+
 
 
 class TestSubstituteTemplateVariables:
