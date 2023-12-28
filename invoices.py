@@ -1,6 +1,7 @@
 from helpers import date_to_string
 from helpers import date_string_to_date
 from helpers import load_file_content
+from helpers import return_random_unique_values_from_list
 from helpers import substitute_template_variables
 
 import datetime
@@ -37,22 +38,31 @@ def populate_table_invoices(customer_data, product_data,start_date, end_date,pro
     generated_invoice_items = []
     list_customer_ids = []
     list_product_ids = []
+    product_ids_prices = {}
     for customer in customer_data:
         customer_id = customer.customer_id
         list_customer_ids.append(customer_id)
 
     for product in product_data:
         list_product_ids.append(product[0])
+        product_ids_prices[product[0]] = product[2]
 
     start_date_as_date = date_string_to_date(start_date)
     end_date_as_date = date_string_to_date(end_date)
     delta = datetime.timedelta(days=1)
-    current_primary_key_product_id = 1
+    current_primary_key_invoice_id = 1
     while start_date_as_date <= end_date_as_date:
         for customer_id in list_customer_ids:
             random_number = random.random()
             if random_number <= probability_invoice_per_customer_id_per_day:
                 date_of_invoice = date_to_string(start_date_as_date)
+                random_product_ids = return_random_unique_values_from_list(list_product_ids, number_different_products_per_invoice)
+                for product_id in random_product_ids:
+                    invoice_item = (date_of_invoice,customer_id,current_primary_key_invoice_id,product_id,number_items_per_product,product_ids_prices[product_id])
+                    generated_invoice_items.append(invoice_item)
+
+                current_primary_key_invoice_id += 1
+
 
 
         start_date_as_date += delta

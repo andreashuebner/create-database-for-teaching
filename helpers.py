@@ -2,7 +2,7 @@ import datetime
 import random
 
 error_message_invalid_date_string = 'Date string must be in format yyyy-MM-dd'
-error_message_invalid_input_unique_values_from_list = 'First argument must be a non-empty list and second parameter (number of unique items) a list'
+error_message_invalid_input_unique_values_from_list = 'First argument must be a non-empty list and second parameter (number of unique items) must be an integer greater than 0'
 
 
 class InvalidDateStringError(Exception):
@@ -68,12 +68,30 @@ def return_random_value_from_list(list_of_values):
     return random.choice(list_of_values)
 
 
-def return_random_unique_values_from_list(list_of_values, number_unique_items):
-    print(type(list_of_values))
-    if isinstance(list_of_values, list):
-        return []
-    else:
+def return_random_unique_values_from_list(list_of_values, number_unique_items_requested):
+    if not isinstance(list_of_values, list) or not isinstance(number_unique_items_requested, int) or number_unique_items_requested <= 0:
         raise ValueError(error_message_invalid_input_unique_values_from_list)
+    else:
+        # Copy the unique items into a second list
+        items_copied = {}
+        items_unique = []
+        for element in list_of_values:
+            if element not in items_copied:
+                items_unique.append(element)
+                items_copied[element] = 1
+
+        number_unique_items = len(items_unique)
+        if number_unique_items < number_unique_items_requested:
+            raise ValueError('Less unique items in list than requested')
+
+        items_unique_to_return = []
+        for i in range(number_unique_items_requested):
+            random_element = random.choice(items_unique)
+            items_unique_to_return.append(random_element)
+            items_unique.remove(random_element)
+
+        return items_unique_to_return
+
 
 
 

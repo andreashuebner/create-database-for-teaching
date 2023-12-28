@@ -79,10 +79,28 @@ class TestReturnRandomUniqueValuesFromList:
     def test_throws_error_incorrect_parameters(self):
         test_cases = [
             ('',''),
+            (5,[]), # Parameters in wrong order
+            ([],-1), # Second parameter needs to be greater than 0
+            ([],0) # Second parameter needs to be greater than 0
+
         ]
         for test_case in test_cases:
             with pytest.raises(ValueError):
                 return_random_unique_values_from_list(test_case[0], test_case[1])
+
+    def test_throws_error_with_less_unique_items_in_list_than_requested(self):
+        with pytest.raises(ValueError):
+            return_random_unique_values_from_list(['andreas','peter','inga','peter','andreas'],4) # Should raise error as only 3 unique items in list
+
+    def test_returns_correct_number_of_unique_items(self):
+        results = return_random_unique_values_from_list(['andreas','peter','inga','peter','andreas'],3)
+        assert(len(results) == 3)
+        assert('andreas' in results)
+        assert('peter' in results)
+        assert('inga' in results)
+
+
+
 
 
 
