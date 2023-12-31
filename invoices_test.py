@@ -5,9 +5,9 @@ from invoices import populate_table_invoices
 from products import populate_table_products
 from products_params import products
 
-
 import pytest
 from unittest import mock
+
 
 class TestInvoicesTable:
     def test_create_invoices_table(self):
@@ -32,7 +32,6 @@ ALTER TABLE IF EXISTS public.invoices2
         invoices_table_create_statement = remove_linebreaks_whitespaces(invoices_table_create_statement)
         assert (expected_statement == invoices_table_create_statement)
 
-
     def test_throws_exception_with_invalid_parameters(self):
         # Each test case has the following elements in tuple (numbers = indicies)
         # 0 customer_data
@@ -47,20 +46,25 @@ ALTER TABLE IF EXISTS public.invoices2
         customer_data = populate_table_customers(1, 100)
         product_data = populate_table_products(products)
         test_cases = [
-            (customer_data, product_data,"2023-02-01","2023-01-01",0.02,1,3,1,3), # Should throw exception as start date after end date
-            (customer_data, product_data, "2023-01-01", "2023-03-01", 0, 1, 3, 1, 3), # Should throw exception as probability of invoice must be greater than 0
-            (customer_data, product_data, "2023-01-01", "2023-03-01", 1.1, 1, 3, 1, 3), # Should throw exception as probability of invoice must not be greater than 0
-            (customer_data, product_data, "2023-01-01", "2023-03-01", 0.5, 0, 3, 1, 3), # Should throw exception as minimum number of different products per invoice must be greater than 0
-            (customer_data, product_data, "2023-01-01", "2023-03-01", 0.5, 2, 1, 1, 3), # Should throw exception as minimum number of different products per invoice must not be greater than maximum number
-            (customer_data, product_data, "2023-01-01", "2023-03-01", 0.5, 1, 2, 2, 1), # Should throw exception as minimum number items per product greater than maximum number of items per product
+            (customer_data, product_data, "2023-02-01", "2023-01-01", 0.02, 1, 3, 1, 3),
+            # Should throw exception as start date after end date
+            (customer_data, product_data, "2023-01-01", "2023-03-01", 0, 1, 3, 1, 3),
+            # Should throw exception as probability of invoice must be greater than 0
+            (customer_data, product_data, "2023-01-01", "2023-03-01", 1.1, 1, 3, 1, 3),
+            # Should throw exception as probability of invoice must not be greater than 0
+            (customer_data, product_data, "2023-01-01", "2023-03-01", 0.5, 0, 3, 1, 3),
+            # Should throw exception as minimum number of different products per invoice must be greater than 0
+            (customer_data, product_data, "2023-01-01", "2023-03-01", 0.5, 2, 1, 1, 3),
+            # Should throw exception as minimum number of different products per invoice must not be greater than maximum number
+            (customer_data, product_data, "2023-01-01", "2023-03-01", 0.5, 1, 2, 2, 1),
+            # Should throw exception as minimum number items per product greater than maximum number of items per product
 
         ]
-
 
         for test_case in test_cases:
             with pytest.raises(ValueError):
                 populate_table_invoices(test_case[0], test_case[1], test_case[2], test_case[3],
-                test_case[4], test_case[5],test_case[6],test_case[7],test_case[8])
+                                        test_case[4], test_case[5], test_case[6], test_case[7], test_case[8])
 
     def test_generate_correct_invoices(self):
         customer_data = populate_table_customers(1, 100)
@@ -72,8 +76,8 @@ ALTER TABLE IF EXISTS public.invoices2
         maximum_number_different_products_per_invoice = 5
         minimum_number_items_per_product = 1
         maximum_number_items_per_product = 4
-        invoices_data = populate_table_invoices(customer_data,product_data,
-                                                start_date,end_date,probability_invoice_per_customer_id_per_day,
+        invoices_data = populate_table_invoices(customer_data, product_data,
+                                                start_date, end_date, probability_invoice_per_customer_id_per_day,
                                                 minimum_number_different_products_per_invoice,
                                                 maximum_number_different_products_per_invoice,
                                                 minimum_number_items_per_product,
@@ -92,9 +96,90 @@ ALTER TABLE IF EXISTS public.invoices2
         # We will have a similar approach for other parameters like average number of different products per invoice
         # or average number of items per product
 
+        # Overall, we have 518 days and 100 customers
+        # So we would expect around 1,036 unique invoice ids (518 * 100 * 0.02)
+        # Count the number of unique invoice ids. Because of low data volume, we choose a non-optimum algorithm
+        # for the sake of keeping it simple, even when using a list for membership tests
+        unique_invoice_ids = []
+        unique_customer_ids = []
+        unique_product_ids = []
+        for invoice in invoices_data:
+            customer_id = invoice[1]
+            invoice_id = invoice[2]
+            product_id = invoice[3]
 
+            if customer_id not in unique_customer_ids:
+                unique_customer_ids.append(customer_id)
+            if invoice_id not in unique_invoice_ids:
+                unique_invoice_ids.append(invoice_id)
+            if product_id not in unique_product_ids:
+                unique_product_ids.append(product_id)
 
-        assert(True == True)
+        number_unique_invoices = len(unique_invoice_ids)
+        assert (number_unique_invoices >= 950 and number_unique_invoices <= 1150)
 
+        # In the invoices data, every customer_id should also be part of the customer datasets
+        # and every product_id should be part of the product datasets
+        customer_ids_in_customer_data = {}
+        product_ids_in_product_data = {}
+        for customer in customer_data:
+            customer_ids_in_customer_data[customer.customer_id] = 1
 
+        for product in product_data:
+            product_ids_in_product_data[product[0]] = 1
 
+        for customer_id in unique_customer_ids:
+            assert (customer_id in customer_ids_in_customer_data)
+
+        for product_id in unique_product_ids:
+            assert (product_id in product_ids_in_product_data)
+
+        # Check that primary keys are correctly populated
+        sum_unique_invoice_ids = sum(unique_invoice_ids)
+        check_sum_unique_invoice_ids = 0
+        for i in range(len(unique_invoice_ids)):
+            check_sum_unique_invoice_ids += (i + 1)
+
+        assert (check_sum_unique_invoice_ids == sum_unique_invoice_ids)
+
+        # Check that number of different products per invoice are correctly populated
+        # Build a hash with each invoice id being the key and the unique product ids being the value in a list
+        # Then go through each invoice id and make sure that the number of unique product ids is not below
+        # the minimum and the maximum
+        # Also ensure that the number of different products per invoice are about equally distributed
+
+        hash_products_per_invoice = {}
+        hash_counter_distribution_number_products_invoice = {}
+
+        for invoice in invoices_data:
+            invoice_id = invoice[2]
+            product_id = invoice[3]
+            if invoice_id not in hash_products_per_invoice:
+                hash_products_per_invoice[invoice_id] = []
+
+            if product_id not in hash_products_per_invoice[invoice_id]:
+                hash_products_per_invoice[invoice_id].append(product_id)
+
+        for invoice_id in hash_products_per_invoice:
+            number_different_product_ids = len(hash_products_per_invoice[invoice_id])
+            if number_different_product_ids not in hash_counter_distribution_number_products_invoice:
+                hash_counter_distribution_number_products_invoice[number_different_product_ids] = 0
+            hash_counter_distribution_number_products_invoice[number_different_product_ids] += 1
+            assert (number_different_product_ids >= minimum_number_different_products_per_invoice)
+            assert (number_different_product_ids <= maximum_number_different_products_per_invoice)
+
+        # Check distribution of number_of_product_ids_per_invoice
+        # First get the number of different combinations
+        number_different_combinations = 0
+        for key in hash_counter_distribution_number_products_invoice:
+            number_different_combinations += 1
+
+        reference_value_per_bucket = len(unique_invoice_ids) / number_different_combinations
+        for key in hash_counter_distribution_number_products_invoice:
+            number_combinations = hash_counter_distribution_number_products_invoice[key]
+            # Check that each number_of_different_products_per_invoice_id is within 70% - 130% range
+            assert (
+                    number_combinations >= reference_value_per_bucket * 0.7 and
+                    number_combinations <= reference_value_per_bucket * 1.3)
+
+        # Now check that the number of items per product is within minimum and maximum number range
