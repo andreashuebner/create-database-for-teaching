@@ -4,6 +4,8 @@ from customers import populate_table_customers
 from helpers import load_file_content
 from helpers import substitute_template_variables
 from invoices import create_table_statement_invoices
+from invoices import create_insert_statement_invoices
+from invoices import populate_table_invoices
 from products_params import products
 from products import create_table_statement_products
 from products import create_table_statement_product_categories
@@ -25,12 +27,14 @@ table_name_invoices = 'invoices'
 table_name_products = 'products'
 table_name_product_categories = 'product_categories'
 customers_start_value_primary_key = 1
-number_of_customer_entries_to_generate = 1000
+number_of_customer_entries_to_generate = 100
 start_date_invoice_generation = '2022-01-01'
 end_date_invoice_generation = '2023-12-31'
-probability_invoice_per_customer_id_per_day = 0.02 # Probability to generate an invoice for a single customers per day
-average_number_different_products_per_invoice = 2 # Average number of different products per invoice
-average_number_items_per_product = 3 # Average number of items per product for each product in invoice
+probability_invoice_per_customer_id_per_day = 0.002 # Probability to generate an invoice for a single customers per day
+minimum_number_different_products_per_invoice = 1 # Minimum number of products to generate per invoice
+maximum_number_different_products_per_invoice = 5 # Maximum number of products to generate per invoice
+minimum_number_items_per_product = 1 # Minimum number of items to generate per product
+maximum_number_items_per_product = 10 # Maximum number of items to generate per product
 show_stats = True # Whether to print stats about the created data
 
 # End global options that can be adjusted ##################################################
@@ -120,6 +124,44 @@ def create_database_files():
     output_create_and_populate_tables += '\n\n'
     if show_stats:
         print('Statement to create table', table_name_invoices, 'created')
+
+
+    invoice_items = populate_table_invoices(customer_entries,product_entries,
+                                        start_date_invoice_generation, end_date_invoice_generation,
+                                        probability_invoice_per_customer_id_per_day,
+                                        minimum_number_different_products_per_invoice, maximum_number_different_products_per_invoice,
+                                        minimum_number_items_per_product, maximum_number_items_per_product)
+
+
+
+    insert_statements = []
+    for invoice_item in invoice_items:
+        date = invoice_item[0]
+        customer_id = invoice_item[1]
+        invoice_id = invoice_item[2]
+        product_id = invoice_item[3]
+        number_items = invoice_item[4]
+        item_price = invoice_item[5]
+        insert_statement = create_insert_statement_invoices(database_system,
+                                                        table_name_invoices,
+                                                        date,
+                                                        customer_id,
+                                                        product_id,
+                                                        invoice_id,
+                                                        number_items,
+                                                        item_price)
+
+        insert_statements.append(insert_statement)
+
+
+    insert_statement_string = '\n'.join(insert_statements)
+    output_create_and_populate_tables += insert_statement_string
+    if show_stats:
+        print('Statement to populate table' ,table_name_invoices, 'created with',len(insert_statements), 'datasets')
+
+
+
+
 
     with open(os.path.join(output_dir,output_file_create_database_statement),'w') as output_file:
         output_file.write(output_create_database)

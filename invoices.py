@@ -8,6 +8,33 @@ import datetime
 import os
 import random
 
+
+# insert into {{table_name}} (date,customer_id,invoice_id,product_id,number_items,price_per_item) values ('{{date}}',{{customer_id}},{{product_id}},{{invoice_id}},{{number_items}},{{price_per_item}});
+def create_insert_statement_invoices(database_system, table_name,
+                                     date, customer_id, product_id, invoice_id, number_items, price_per_item):
+    insert_statement = load_file_content(
+        'templates/insert_table_invoices_' + database_system + '.txt')
+
+    insert_statement = substitute_template_variables(insert_statement,
+                                                     [
+                                                         '{{table_name}}',
+                                                         '{{date}}',
+                                                         '{{customer_id}}',
+                                                         '{{product_id}}',
+                                                         '{{invoice_id}}',
+                                                         '{{number_items}}',
+                                                         '{{price_per_item}}'
+                                                     ],
+                                                     [
+                                                         table_name,
+                                                         date,
+                                                         customer_id,
+                                                         product_id,
+                                                         invoice_id,
+                                                         number_items,
+                                                         price_per_item
+                                                     ])
+    return insert_statement
 def create_table_statement_invoices(template_dir, database_system, table_name):
     create_table_invoices_statement = load_file_content(
         os.path.join(template_dir, 'create_table_invoices' + '_' + database_system + '.txt'))

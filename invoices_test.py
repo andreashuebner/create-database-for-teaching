@@ -1,5 +1,6 @@
 from customers import populate_table_customers
 from helpers import remove_linebreaks_whitespaces
+from invoices import create_insert_statement_invoices
 from invoices import create_table_statement_invoices
 from invoices import populate_table_invoices
 from products import populate_table_products
@@ -182,4 +183,13 @@ ALTER TABLE IF EXISTS public.invoices2
                     number_combinations >= reference_value_per_bucket * 0.7 and
                     number_combinations <= reference_value_per_bucket * 1.3)
 
-        # Now check that the number of items per product is within minimum and maximum number range
+        # TODO: Add more tests here
+    def test_create_insert_statement_invoices(self):
+        insert_statement = create_insert_statement_invoices('postgres','invoices2', '2023-03-04',5,10,15,3,3.52)
+        insert_statement = remove_linebreaks_whitespaces(insert_statement)
+        expected_statement = '''
+        insert into invoices2 (date,customer_id,invoice_id,product_id,number_items,price_per_item) values ('2023-03-04',5,10,15,3,3.52);
+        '''
+        expected_statement = remove_linebreaks_whitespaces(expected_statement)
+        assert(expected_statement == insert_statement)
+
