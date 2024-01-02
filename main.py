@@ -135,6 +135,7 @@ def create_database_files():
 
 
     insert_statements = []
+    print(invoice_items[0:10])
     for invoice_item in invoice_items:
         date = invoice_item[0]
         customer_id = invoice_item[1]
@@ -142,6 +143,9 @@ def create_database_files():
         product_id = invoice_item[3]
         number_items = invoice_item[4]
         item_price = invoice_item[5]
+        #create_insert_statement_invoices(database_system, table_name,
+                                     #date, customer_id, product_id, invoice_id, number_items, price_per_item):
+
         insert_statement = create_insert_statement_invoices(database_system,
                                                         table_name_invoices,
                                                         date,

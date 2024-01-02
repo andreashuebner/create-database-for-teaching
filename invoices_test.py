@@ -84,6 +84,8 @@ ALTER TABLE IF EXISTS public.invoices2
                                                 minimum_number_items_per_product,
                                                 maximum_number_items_per_product)
 
+
+
         # Because the invoices data have a random element, we define for most of the tests intervals that
         # we consider as valid for the tests passed
         # Example:
@@ -108,6 +110,11 @@ ALTER TABLE IF EXISTS public.invoices2
             customer_id = invoice[1]
             invoice_id = invoice[2]
             product_id = invoice[3]
+            number_items = invoice[4]
+            price_per_item = invoice[5]
+            assert(isinstance(product_id,int))
+            assert(isinstance(number_items, int))
+            assert(isinstance(price_per_item, float) or isinstance(price_per_item,int))
 
             if customer_id not in unique_customer_ids:
                 unique_customer_ids.append(customer_id)
@@ -188,7 +195,7 @@ ALTER TABLE IF EXISTS public.invoices2
         insert_statement = create_insert_statement_invoices('postgres','invoices2', '2023-03-04',5,10,15,3,3.52)
         insert_statement = remove_linebreaks_whitespaces(insert_statement)
         expected_statement = '''
-        insert into invoices2 (date,customer_id,invoice_id,product_id,number_items,price_per_item) values ('2023-03-04',5,10,15,3,3.52);
+        insert into invoices2 (date,customer_id,invoice_id,product_id,number_items,price_per_item) values ('2023-03-04',5,15,10,3,3.52);
         '''
         expected_statement = remove_linebreaks_whitespaces(expected_statement)
         assert(expected_statement == insert_statement)

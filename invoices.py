@@ -3,6 +3,7 @@ from helpers import date_string_to_date
 from helpers import load_file_content
 from helpers import return_random_unique_values_from_list
 from helpers import substitute_template_variables
+from products_params import products
 
 import datetime
 import os
@@ -71,13 +72,16 @@ def populate_table_invoices(customer_data, product_data,start_date, end_date,pro
     list_customer_ids = []
     list_product_ids = []
     product_ids_prices = {}
+    product_names_product_prices = {}
+    for product in products:
+        product_names_product_prices[product[0]] = product[2]
     for customer in customer_data:
         customer_id = customer.customer_id
         list_customer_ids.append(customer_id)
 
     for product in product_data:
         list_product_ids.append(product[0])
-        product_ids_prices[product[0]] = product[2]
+        product_ids_prices[product[0]] = product_names_product_prices[product[2]]
 
     start_date_as_date = date_string_to_date(start_date)
     end_date_as_date = date_string_to_date(end_date)

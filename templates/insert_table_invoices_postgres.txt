@@ -1,1 +1,1 @@
-insert into {{table_name}} (date,customer_id,invoice_id,product_id,number_items,price_per_item) values ('{{date}}',{{customer_id}},{{product_id}},{{invoice_id}},{{number_items}},{{price_per_item}});
+insert into {{table_name}} (date,customer_id,invoice_id,product_id,number_items,price_per_item) values ('{{date}}',{{customer_id}},{{invoice_id}},{{product_id}},{{number_items}},{{price_per_item}});
