@@ -135,7 +135,6 @@ def create_database_files():
 
 
     insert_statements = []
-    print(invoice_items[0:10])
     for invoice_item in invoice_items:
         date = invoice_item[0]
         customer_id = invoice_item[1]
