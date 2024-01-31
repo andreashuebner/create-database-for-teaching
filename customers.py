@@ -65,7 +65,7 @@ def populate_table_customers(start_value=1,
     for i in range(start_value, start_value + number_of_entries, 1):
         random_first_name = return_random_value_from_list(first_names)
         random_last_name = return_random_value_from_list(last_names)
-        random_street_name = return_random_value_from_list(street_names) + ' Street'
+        random_street_name = return_random_value_from_list(street_names)
         random_house_number = random.randint(1, 500)
         random_po = random.randint(10000,99999)
         random_city_state = return_random_value_from_list(city_states)
